@@ -1,35 +1,31 @@
 #!/bin/bash
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+#set -x
 
 USER="fsbackup"
 PASSWORD="mysecurepass"
 OUTPUTDIR="/data/backups/daily_mysql_dump"
-MYSQLDUMP="/usr/bin/mysqldump"
-MYSQL="/usr/bin/mysql"
-DATE=`date +%Y%m%d`
-ROTATE="/usr/sbin/logrotate -f"
 
 # check conditions
 #------------------------------------------------------------------------------------------
-ls $OUTPUTDIR > /dev/null 2>&1
-if [ $? -ne 0 ]							# if not equal, not success
+if [ ! -d "$OUTPUTDIR" ]						# if not equal, not success
 then
-	/bin/mkdir -p $OUTPUTDIR
+	mkdir -p "$OUTPUTDIR"
 fi
 
-#CREATE USER 'fsbackup'@'localhost' IDENTIFIED BY '';
-#GRANT SELECT, FILE, SHOW DATABASES, LOCK TABLES, SHOW VIEW ON *.* TO 'fsbackup'@'localhost' IDENTIFIED BY '';
+#CREATE USER 'fsbackup'@'localhost' IDENTIFIED BY 'mysecurepass';
+#GRANT SELECT, FILE, SHOW DATABASES, LOCK TABLES, SHOW VIEW ON *.* TO 'fsbackup'@'localhost' IDENTIFIED BY 'mysecurepass';
 
 #/bin/rm $OUTPUTDIR/*
 
 # get a list of databases
-databases=`$MYSQL --user=$USER --password=$PASSWORD -e "SHOW DATABASES;" | tr -d "| " | grep -v Database`
+databases=$(mysql --user=$USER --password=$PASSWORD -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)
 
 # dump each database in turn
 for db in $databases; do
-    echo $db
-    $MYSQLDUMP --force --opt --user=$USER --password=$PASSWORD --databases $db > "$OUTPUTDIR/$db.sql"
-    gzip "$OUTPUTDIR/$db.sql"
+	echo "$db"
+	mysqldump --force --opt --user=$USER --password=$PASSWORD --databases "$db" > "$OUTPUTDIR/$db.sql"
+	gzip "$OUTPUTDIR/$db.sql"
 done
 
-$ROTATE /etc/logrotate_mysql_dump_daily.conf 
+logrotate -f /etc/logrotate_mysql_dump_daily.conf
