@@ -1,4 +1,6 @@
 #!/bin/bash
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+#set -x
 
 # automatic configuration change logrotate rules for site
 
@@ -8,8 +10,8 @@ APACHE_GROUP="www-data"
 while SITE_ROOT in "$(find $SITE_LOCATION -mindepth 1 -maxdepth 1 -type d -user www-data)"
 do
 
-  DOMAIN_NAME=$(basename "$SITE_ROOT")
-  LOGROTATE_CONFIG="/etc/logrotate.d/apache2-$DOMAIN_NAME"
+	DOMAIN_NAME=$(basename "$SITE_ROOT")
+	LOGROTATE_CONFIG="/etc/logrotate.d/apache2-$DOMAIN_NAME"
 
 	echo "$SITE_ROOT/logs/error.log {" > "$LOGROTATE_CONFIG"
 	{
