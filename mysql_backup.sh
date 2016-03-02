@@ -28,4 +28,4 @@ for db in $databases; do
 	gzip "$OUTPUTDIR/$db.sql"
 done
 
-logrotate -f /etc/logrotate_mysql_dump_daily.conf
+logrotate -f /etc/logrotate_backup_daily_mysql_dump.conf
