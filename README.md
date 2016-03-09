@@ -2,7 +2,7 @@
 
 Debian Wheezy support
 
-mysql dump and data backup. You can save last 5 daily logs in /data/backups/daily_data /data/backups/daily_mysql_dump and last 3 monthly backup (together data and mysql dump) in /data/backups/monthly_dump_and_data
+mysql dump and data backup. You can save last 5 daily backups in /data/backups/daily_data /data/backups/daily_mysql_dump and last 3 monthly backup (together data and mysql dump) in /data/backups/monthly_dump_and_data. Monthly backup contains data for 3 days before the end of the month.
 
 1 ) crontab -l
 
