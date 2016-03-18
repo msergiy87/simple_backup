@@ -1,6 +1,11 @@
 # simple_backup
 
-Debian Wheezy support
+Distros tested
+------------
+Currently, this is only tested on Debian 7.9. It should theoretically work on older versions of Ubuntu or Debian based systems.
+
+Usage
+------------
 
 mysql dump and data backup. You can save last 5 daily backups in /data/backups/daily_data /data/backups/daily_mysql_dump and last 3 monthly backup (together data and mysql dump) in /data/backups/monthly_dump_and_data. Monthly backup contains data for 4 days before the end of the each month.
 
