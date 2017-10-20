@@ -12,7 +12,7 @@ Usage
 1 ) add crontab tasks
 ```
 03 02 1 * *     /root/scripts/backup.sh monthly > /dev/null 2>&1
-03 03 * * *     /root/scripts/mysql_backup.sh > /dev/null 2>&1
+03 03 * * *     /root/scripts/backup.sh mysql > /dev/null 2>&1
 23 03 * * *     /root/scripts/backup.sh daily > /dev/null 2>&1
 ```
 2 ) change rights and owner
@@ -22,9 +22,19 @@ chmod 644 logrotate_backup_*
 chmown root:root ../simple_backup -R
 ```
 3 ) move logrotate files to /etc/
-
+```
+mv logrotate_backup_* /etc/
+```
 4 ) move scripts to /root/scripts/
-
-5 ) change var SITE_LOCATION and create mysql user
+```
+mkdir -p /root/scripts
+mv *.sh /root/scripts
+```
+5 ) change variable SITE_LOCATION and USER, PASSWORD (use script instructions for create mysql user)
+```
+#CREATE USER 'fsbackup'@'localhost' IDENTIFIED BY 'mysecurepass';
+#GRANT SELECT, FILE, SHOW DATABASES, LOCK TABLES, SHOW VIEW ON *.* TO 'fsbackup'@'localhost' IDENTIFIED BY 'mysecurepass';
+#flush privileges;
+```
 
 6 ) change_logrotate.sh - create or change logrotate scenario for sites 
