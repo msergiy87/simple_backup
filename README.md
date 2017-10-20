@@ -9,16 +9,20 @@ Currently, this is only tested on Debian 7.9. It should theoretically work on ol
 Usage
 ------------
 
-1 ) crontab -l
-
+1 ) add crontab tasks
+```
 03 02 1 * *     /root/scripts/backup.sh monthly > /dev/null 2>&1
-
 03 03 * * *     /root/scripts/mysql_backup.sh > /dev/null 2>&1
-
 23 03 * * *     /root/scripts/backup.sh daily > /dev/null 2>&1
+```
+2 ) change rights and owner
+```
+chmod 744 *.sh
+chmod 644 logrotate_backup_*
+chmown root:root ../simple_backup -R
+```
+3 ) move logrotate files to /etc/
 
-2) move logrotate files to /etc/
+4 ) move scripts to /root/scripts/
 
-3) move scripts to /root/scripts/
-
-4) change_logrotate.sh - create or change logrotate scenario for sites 
+5 ) change_logrotate.sh - create or change logrotate scenario for sites 
