@@ -15,6 +15,7 @@ fi
 
 #CREATE USER 'fsbackup'@'localhost' IDENTIFIED BY 'mysecurepass';
 #GRANT SELECT, FILE, SHOW DATABASES, LOCK TABLES, SHOW VIEW ON *.* TO 'fsbackup'@'localhost' IDENTIFIED BY 'mysecurepass';
+#flush privileges;
 
 #/bin/rm $OUTPUTDIR/*
 
