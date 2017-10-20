@@ -25,4 +25,6 @@ chmown root:root ../simple_backup -R
 
 4 ) move scripts to /root/scripts/
 
-5 ) change_logrotate.sh - create or change logrotate scenario for sites 
+5 ) change var SITE_LOCATION and create mysql user
+
+6 ) change_logrotate.sh - create or change logrotate scenario for sites 
