@@ -1,5 +1,4 @@
-#!/bin/bash
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
+#!/usr/bin/env bash
 #set -x
 
 # data
@@ -19,29 +18,29 @@ PASSWORD="mysecurepass"
 if [ ! -d "$BACKUP_DIR" ]						# if not equal, not success
 then
 	mkdir -p "$BACKUP_DIR"/daily_data
-	mkdir -p "$BACKUP_DIR"/monthly_dump_and_data
 	mkdir -p "$BACKUP_DIR"/daily_mysql_dump
+	mkdir -p "$BACKUP_DIR"/monthly_dump_and_data
 fi
 
 case "$1" in
 "daily" )
 
-	find $SITE_LOCATION -mindepth 1 -maxdepth 1 -type d -user www-data >> /tmp/bk_list_of_dirs
+	DIR_LIST="$SITE_LOCATION \
+	/etc \
+	/root/scripts \
+	/var/spool/cron/crontabs \
+	/usr/local \
+	/var/lib/mysql"
+	# /home
 
-	while read -r SITE_ROOT
+	for DIR in $DIR_LIST
 	do
-		DOMAIN_NAME=$(basename "$SITE_ROOT")
-		tar --numeric-owner -czpf "$BACKUP_DIR"/daily_data/"$DOMAIN_NAME".tar.gz "$SITE_ROOT"
-	done < /tmp/bk_list_of_dirs
+		DOMAIN_NAME=$(basename "$DIR")
+		tar --numeric-owner --exclude="$SITE_LOCATION/upfiles" -czpf "$BACKUP_DIR"/daily_data/"$DOMAIN_NAME".tar.gz "$DIR"
+	done
 
 	logrotate -f /etc/logrotate_backup_daily_data.conf
-	rm /tmp/bk_list_of_dirs
-	;;
-
-"monthly" )
-	mv "$BACKUP_DIR"/daily_data/*.tar.gz.5 "$BACKUP_DIR"/monthly_dump_and_data/
-	mv "$BACKUP_DIR"/daily_mysql_dump/*.sql.gz.5 "$BACKUP_DIR"/monthly_dump_and_data/
-	logrotate -f /etc/logrotate_backup_monthly_dump_and_data.conf
+	chmod 600 /data/backups/daily_data/*
 	;;
 
 "mysql" )
@@ -56,5 +55,19 @@ case "$1" in
 	done
 
 	logrotate -f /etc/logrotate_backup_daily_mysql_dump.conf
+	chmod 600 /data/backups/daily_mysql_dump/*
 	;;
+
+"monthly" )
+
+	#ls $SITE_LOCATION/upfiles/ > /root/scripts/upfiles_list
+	#ls -l $SITE_LOCATION > /root/scripts/var_www_rules
+
+	mv "$BACKUP_DIR"/daily_data/*.tar.gz.5 "$BACKUP_DIR"/monthly_dump_and_data/
+	mv "$BACKUP_DIR"/daily_mysql_dump/*.sql.gz.5 "$BACKUP_DIR"/monthly_dump_and_data/
+
+	logrotate -f /etc/logrotate_backup_monthly_dump_and_data.conf
+	chmod 600 /data/backups/monthly_dump_and_data/*
+	;;
+
 esac
